@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe
+  template:
+    metadata:
+      labels:
+        app: oracle-xe
+    spec:
+      containers:
+      - name: oracle-xe
+        image: jaspeen/oracle-xe-11g
+        ports:
+        - containerPort: 1521
+        env:
+        - name: ORACLE_SID
+          value: "XE"
+        - name: ORACLE_PWD
+          value: "oracle"  # Oracle 비밀번호 설정
+        volumeMounts:
+        - name: oracle-xe-storage
+          mountPath: /u01/app/oracle/oradata
+      volumes:
+      - name: oracle-xe-storage
+        persistentVolumeClaim:
+          claimName: oracle-xe-pvc

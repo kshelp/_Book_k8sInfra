@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: oracle-xe-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.1.10  # NFS 서버의 IP 주소 또는 호스트 이름
+    path: /nfs_shared/oracle/oradata    # NFS 공유 디렉토리 경로
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oracle-xe-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe
+  template:
+    metadata:
+      labels:
+        app: oracle-xe
+    spec:
+      containers:
+      - name: oracle-xe
+        image: andyrbell/oracle-xe-11g-centos
+        imagePullPolicy: IfNotPresent  # 또는 Always
+        ports:
+        - containerPort: 1521  # Oracle DB 포트
+        - containerPort: 8080  # Oracle APEX 포트
+        volumeMounts:
+        - mountPath: /u01/app/oracle/oradata  # Oracle 데이터 디렉토리
+          name: oracle-xe-storage
+      volumes:
+      - name: oracle-xe-storage
+        persistentVolumeClaim:
+          claimName: oracle-xe-pvc

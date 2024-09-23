@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe
+  template:
+    metadata:
+      labels:
+        app: oracle-xe
+    spec:
+      containers:
+        - name: oracle-xe-container
+          image: wnameless/oracle-xe-11g
+          ports:
+            - containerPort: 1521 # Oracle default port
+            - containerPort: 8080 # Oracle EM default port
+          env:
+            - name: ORACLE_ALLOW_REMOTE
+              value: "true"
+            - name: ORACLE_PASSWORD
+              value: "oracle1" # replace with your desired password
+          volumeMounts:
+            - mountPath: "/u01/app/oracle/oradata_2"
+              name: oracle-data
+      volumes:
+        - name: oracle-data
+          persistentVolumeClaim:
+            claimName: oracle-nfs-pvc
+

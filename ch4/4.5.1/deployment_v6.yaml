@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe-11g
+  labels:
+    app: oracle-xe-11g
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe-11g
+  template:
+    metadata:
+      labels:
+        app: oracle-xe-11g
+    spec:
+      containers:
+        - name: oracle-xe-11g
+          image: jaspeen/oracle-xe-11g
+          ports:
+            - containerPort: 1521 # Oracle listener port
+            - containerPort: 8080 # Oracle Enterprise Manager Express
+          volumeMounts:
+            - name: oracle-storage
+              mountPath: /u01/app/oracle
+      volumes:
+        - name: oracle-storage
+          hostPath:
+            path: /nfs_shared/oracle      # 호스트 서버의 실제 경로
+            type: DirectoryOrCreate        # 디렉터리가 없으면 생성
+

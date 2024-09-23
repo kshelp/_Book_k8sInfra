@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: oracle-xe-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /nfs_shared/oradata
+    server: 192.168.1.10
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oracle-xe-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe
+  template:
+    metadata:
+      labels:
+        app: oracle-xe
+    spec:
+      containers:
+      - name: oracle-xe
+        image: oracleinanutshell/oracle-xe-11g:latest
+        ports:
+        - containerPort: 1521
+        volumeMounts:
+        - name: oracle-xe-storage
+          mountPath: /u01/app/oracle/oradata_2
+      volumes:
+      - name: oracle-xe-storage
+        persistentVolumeClaim:
+          claimName: oracle-xe-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-xe-service
+spec:
+  type: NodePort  # 외부 접근을 위해 NodePort 사용
+  ports:
+    - port: 1521
+      targetPort: 1521
+      nodePort: 31521  # 원하는 노드 포트 지정
+  selector:
+    app: oracle-xe
+

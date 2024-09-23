@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle11gxe
+  labels:
+    app: oracle11gxe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle11gxe
+  template:
+    metadata:
+      labels:
+        app: oracle11gxe
+    spec:
+      containers:
+        - name: oracle11gxe
+          image: oracleinanutshell/oracle-xe-11g
+          ports:
+            - containerPort: 1521 # Oracle listener port
+            - containerPort: 8080 # Oracle Enterprise Manager Express
+          volumeMounts:
+            - name: oracle-nfs-storage
+              mountPath: /u01/app/oracle/oradata
+      volumes:
+        - name: oracle-nfs-storage
+          hostPath:
+            path: /nfs_shared/oradata      # 호스트 서버의 실제 경로
+            type: DirectoryOrCreate        # 디렉터리가 없으면 생성

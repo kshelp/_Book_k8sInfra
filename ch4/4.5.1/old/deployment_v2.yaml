@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle11g
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle11g
+  template:
+    metadata:
+      labels:
+        app: oracle11g
+    spec:
+      containers:
+      - name: oracle11g
+        image: oracleinanutshell/oracle-xe-11g:latest
+        imagePullPolicy: IfNotPresent  # 또는 Always
+        ports:
+        - containerPort: 1521
+        - containerPort: 8080
+        volumeMounts:
+        - name: oracle11g-data
+          mountPath: /u01/app/oracle/oradata
+      volumes:
+      - name: oracle11g-data
+        persistentVolumeClaim:
+          claimName: oracle11g

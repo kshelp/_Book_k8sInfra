@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle11g
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle11g
+  template:
+    metadata:
+      labels:
+        app: oracle11g
+    spec:
+      containers:
+      - name: oracle11g
+        image: andyrbell/oracle-xe-11g-centos
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 1521

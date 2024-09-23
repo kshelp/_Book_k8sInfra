@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe-11g
+  labels:
+    app: oracle-xe-11g
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe-11g
+  template:
+    metadata:
+      labels:
+        app: oracle-xe-11g
+    spec:
+      containers:
+        - name: oracle-xe-11g
+          image: jaspeen/oracle-xe-11g
+          ports:
+            - containerPort: 1521 # Oracle listener port
+            - containerPort: 8080 # Oracle Enterprise Manager Express
