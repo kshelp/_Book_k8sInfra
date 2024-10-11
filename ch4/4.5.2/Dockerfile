@@ -1,10 +1,13 @@
-FROM openjdk:11
-LABEL description="Echo IP Java Application"
-EXPOSE 60433
+FROM openjdk:11  AS int-build
+LABEL description="Java Application builder"
 RUN git clone https://github.com/kshelp/ch02_mybatis.git
 WORKDIR ch02_mybatis
 RUN chmod 700 mvnw
 RUN ./mvnw clean package
-RUN mv target/app-in-host.jar /opt/app-in-image.jar
+
+FROM gcr.io/distroless/java:8
+LABEL description="Spring Boot Application"
+EXPOSE 60433
+COPY --from=int-build inbuilder/target/app-in-host.jar /opt/app-in-image.jar
 WORKDIR /opt
 ENTRYPOINT [ "java", "-jar", "app-in-image.jar" ]
