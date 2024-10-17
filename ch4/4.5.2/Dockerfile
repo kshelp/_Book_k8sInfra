@@ -5,7 +5,7 @@ WORKDIR ch02_mybatis
 RUN chmod 700 mvnw
 RUN ./mvnw clean package
 
-FROM gcr.io/distroless/java:11
+FROM openjdk:11-jre-slim
 LABEL description="Spring Boot Application"
 EXPOSE 60433
 COPY --from=int-build ch02_mybatis/target/app-in-host.jar /opt/app-in-image.jar
