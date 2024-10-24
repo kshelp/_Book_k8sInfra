@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngrok
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngrok
+  template:
+    metadata:
+      labels:
+        app: ngrok
+    spec:
+      containers:
+        - name: ngrok
+          image: ngrok/ngrok
+          env:
+            - name: NGROK_AUTHTOKEN
+              value: "1yqxg2d27uOomjil3m5FNWb3XrB_3WTsUJ2fG2hzjdneCM3uW"
+          args:
+            - "http"
+            - "192.168.1.11"
+
