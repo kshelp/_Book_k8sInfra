@@ -24,3 +24,11 @@ spec:
               value: SCOTT
             - name: SPRING_DATASOURCE_PASSWORD
               value: TIGER
+          volumeMounts:
+            - name: upload
+              mountPath: /opt/upload
+      volumes:
+        - name: upload
+          nfs:
+            server: 192.168.1.10  # 여기에 NFS 서버 IP 주소를 입력
+            path: /nfs_shared/spring/upload  # NFS 서버의 공유 디렉토리 경로

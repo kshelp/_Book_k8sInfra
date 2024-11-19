@@ -28,4 +28,3 @@ spec:
           nfs:
             server: 192.168.1.10  # 여기에 NFS 서버 IP 주소를 입력
             path: /nfs_shared/oracle  # NFS 서버의 공유 디렉토리 경로
-
