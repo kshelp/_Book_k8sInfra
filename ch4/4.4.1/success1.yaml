@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: success1
+  name: success1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: success1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: success1
+    spec:
+      containers:
+      - image: multistage-img
+        imagePullPolicy: Never
+        name: multistage-img
+        resources: {}
+status: {}

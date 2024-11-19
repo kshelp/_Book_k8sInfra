@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe-11g
+  labels:
+    app: oracle-xe-11g
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-xe-11g
+  template:
+    metadata:
+      labels:
+        app: oracle-xe-11g
+    spec:
+      containers:
+        - name: oracle-xe-11g
+          image: kshelp/oracle-xe-11g
+          ports:
+            - containerPort: 1521 # Oracle listener port
+            - containerPort: 8080 # Oracle Enterprise Manager Express
+          volumeMounts:
+            - name: oracle-storage
+              mountPath: /u01/app/oracle
+      volumes:
+        - name: oracle-storage
+          nfs:
+            server: 192.168.1.10  # 여기에 NFS 서버 IP 주소를 입력
+            path: /nfs_shared/oracle  # NFS 서버의 공유 디렉토리 경로
+
